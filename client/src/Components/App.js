@@ -12,27 +12,38 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
+import AddTask from "./AddTask";
 
 function App() {
+    const [loading, setLoading] = useState(true);
     const [tasks, setTasks] = useState();
+    const [users, setUsers] = useState();
 
     useEffect(() => {
         axios.get("http://localhost:3001/getTasks").then((res) => {
             setTasks(res.data);
-            console.log(res.data);
+        });
+
+        axios.get("http://localhost:3001/getUsers").then((res) => {
+            setUsers(res.data);
+            setLoading(false);
         });
     }, []);
+
+    if (loading === true) {
+        return "Loading...";
+    }
+
+    console.log(users);
 
     return (
         <Container>
             <TableContainer>
                 <Table>
                     <TableBody>
-                        {!tasks
-                            ? "Loading..."
-                            : tasks.map((object) => {
-                                  return <TaskBar object={object} key={object.idtasks} />;
-                              })}
+                        {tasks.map((object) => {
+                            return <TaskBar object={object} key={object.idtasks} />;
+                        })}
                         <TableRow>
                             <TableCell colSpan={3}>
                                 <Chip
@@ -48,6 +59,7 @@ function App() {
                                 />
                             </TableCell>
                         </TableRow>
+                        <AddTask object={users} />
                     </TableBody>
                 </Table>
             </TableContainer>
