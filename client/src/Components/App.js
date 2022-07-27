@@ -9,32 +9,42 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableHead,
     TableRow,
 } from "@mui/material";
 import AddTask from "./AddTask";
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const [tasks, setTasks] = useState();
     const [users, setUsers] = useState();
 
     useEffect(() => {
-        axios.get("http://localhost:3001/getTasks").then((res) => {
-            setTasks(res.data);
-        });
-
-        axios.get("http://localhost:3001/getUsers").then((res) => {
-            setUsers(res.data);
-            setLoading(false);
-        });
+        axios
+            .all([
+                axios.get("http://localhost:3001/getTasks"),
+                axios.get("http://localhost:3001/getUsers"),
+            ])
+            .then(
+                axios.spread((res1, res2) => {
+                    setTasks(res1.data);
+                    setUsers(res2.data);
+                    setLoading(false);
+                })
+            )
+            .catch(function () {
+                setError(true);
+                setLoading(false);
+            });
     }, []);
 
-    if (loading === true) {
+    if (loading) {
         return "Loading...";
     }
 
-    console.log(users);
+    if (error) {
+        return "Error!";
+    }
 
     return (
         <Container>
@@ -42,7 +52,7 @@ function App() {
                 <Table>
                     <TableBody>
                         {tasks.map((object) => {
-                            return <TaskBar object={object} key={object.idtasks} />;
+                            return <TaskBar object={object} key={object.idtask} />;
                         })}
                         <TableRow>
                             <TableCell colSpan={3}>

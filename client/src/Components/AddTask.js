@@ -11,13 +11,29 @@ import {
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useState } from "react";
+import axios from "axios";
 
 const colors = ["primary", "secondary", "error", "warning", "info", "success"];
 
 export default function AddTask({ object }) {
     const [color, setColor] = useState("primary");
     const [task, setTask] = useState("");
-    const [user, setUser] = useState("-");
+    const [user, setUser] = useState(null);
+
+    function AddTask() {
+        if (task !== "") {
+            const userid = user === "" ? null : user;
+
+            axios
+                .post("http://localhost:3001/addTask", { task, color, userid })
+                .then(() => {
+                    console.log("succes");
+                })
+                .catch(function () {
+                    alert("Error");
+                });
+        }
+    }
 
     return (
         <TableRow>
@@ -37,6 +53,7 @@ export default function AddTask({ object }) {
                                 {colors.map((mapColor) => {
                                     return (
                                         <MenuItem
+                                            key={mapColor}
                                             value={mapColor}
                                             sx={{ display: "flex", alignItems: "center" }}
                                         >
@@ -77,20 +94,33 @@ export default function AddTask({ object }) {
                             <Select
                                 labelId="user"
                                 id="user"
-                                value={user}
+                                value={user === null ? "" : user}
                                 label="User"
                                 onChange={(event) => setUser(event.target.value)}
                                 sx={{ height: "56px" }}
                             >
-                                <MenuItem value="-">-</MenuItem>
-                                {object.map((user_) => {
-                                    return <MenuItem value={user_.user}>{user_.user}</MenuItem>;
+                                <MenuItem value={null}>
+                                    <i style={{ color: "gray" }}>No user</i>
+                                </MenuItem>
+                                {object.map((mapUser) => {
+                                    return (
+                                        <MenuItem value={mapUser.user} key={Math.random()}>
+                                            {mapUser.user}
+                                        </MenuItem>
+                                    );
                                 })}
                             </Select>
                         </FormControl>
                     </Grid>
                     <Grid item>
-                        <Button variant="contained">Add</Button>
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                AddTask();
+                            }}
+                        >
+                            Add
+                        </Button>
                     </Grid>
                 </Grid>
             </TableCell>
