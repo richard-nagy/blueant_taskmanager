@@ -13,12 +13,8 @@ const db = mysql.createConnection({
     database: "blueant_db",
 });
 
-/*
-TODO: Request the middlewares
-require("./users.js")(app, db);
-*/
-
 require("./middlewares/tasks.js")(app, db);
+require("./middlewares/users.js")(app, db);
 
 app.listen(3001, () => {
     console.log(`Your server is running on port 3001...`);
