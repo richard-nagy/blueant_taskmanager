@@ -15,6 +15,7 @@ const db = mysql.createConnection({
 
 require("./middlewares/tasks/getTasks.js")(app, db);
 require("./middlewares/tasks/addTask.js")(app, db);
+require("./middlewares/tasks/deleteTask.js")(app, db);
 require("./middlewares/users/getUsers.js")(app, db);
 
 app.get("/getData", (_, res) => {});

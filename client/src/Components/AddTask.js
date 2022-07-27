@@ -12,10 +12,15 @@ import {
 import CircleIcon from "@mui/icons-material/Circle";
 import { useState } from "react";
 import axios from "axios";
+import styled from "@emotion/styled";
+
+const HighButton = styled(Button)(() => ({
+    width: "80px",
+}));
 
 const colors = ["primary", "secondary", "error", "warning", "info", "success"];
 
-export default function AddTask({ object }) {
+export default function AddTask({ object, close, refreshTasks }) {
     const [color, setColor] = useState("primary");
     const [task, setTask] = useState("");
     const [user, setUser] = useState(null);
@@ -27,7 +32,8 @@ export default function AddTask({ object }) {
             axios
                 .post("http://localhost:3001/addTask", { task, color, userid })
                 .then(() => {
-                    console.log("succes");
+                    close();
+                    refreshTasks();
                 })
                 .catch(function () {
                     alert("Error");
@@ -112,15 +118,36 @@ export default function AddTask({ object }) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item>
-                        <Button
-                            variant="contained"
-                            onClick={() => {
-                                AddTask();
-                            }}
+                    <Grid item sx={{ width: "216px" }}>
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={3}
                         >
-                            Add
-                        </Button>
+                            <Grid item>
+                                <HighButton
+                                    variant="contained"
+                                    onClick={() => {
+                                        AddTask();
+                                    }}
+                                >
+                                    Add
+                                </HighButton>
+                            </Grid>
+                            <Grid item>
+                                <HighButton
+                                    color="error"
+                                    variant="contained"
+                                    onClick={() => {
+                                        close();
+                                    }}
+                                >
+                                    Close
+                                </HighButton>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </TableCell>

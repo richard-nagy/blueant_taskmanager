@@ -7,7 +7,8 @@ module.exports = function (app, db) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log("siker");
+                    console.log("Succesful INSERT into tasks table!");
+                    res.send();
                 }
             }
         );

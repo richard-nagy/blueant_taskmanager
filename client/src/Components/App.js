@@ -16,6 +16,7 @@ import AddTask from "./AddTask";
 function App() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [newTask, setNewTask] = useState(false);
     const [tasks, setTasks] = useState();
     const [users, setUsers] = useState();
 
@@ -38,6 +39,17 @@ function App() {
             });
     }, []);
 
+    function RefreshTasks() {
+        axios
+            .get("http://localhost:3001/getTasks")
+            .then((res) => {
+                setTasks(res.data);
+            })
+            .catch(function () {
+                setError(true);
+            });
+    }
+
     if (loading) {
         return "Loading...";
     }
@@ -52,24 +64,41 @@ function App() {
                 <Table>
                     <TableBody>
                         {tasks.map((object) => {
-                            return <TaskBar object={object} key={object.idtask} />;
-                        })}
-                        <TableRow>
-                            <TableCell colSpan={3}>
-                                <Chip
-                                    icon={<AddIcon style={{ color: "orangered" }} />}
-                                    label="Add task"
-                                    sx={{
-                                        backgroundColor: "white",
-                                        cursor: "pointer",
-                                        "&:hover": {
-                                            backgroundColor: "whitesmoke",
-                                        },
-                                    }}
+                            return (
+                                <TaskBar
+                                    taskInformation={object}
+                                    users={users}
+                                    refreshTasks={() => RefreshTasks()}
+                                    key={object.idtask}
                                 />
-                            </TableCell>
-                        </TableRow>
-                        <AddTask object={users} />
+                            );
+                        })}
+                        {newTask ? (
+                            <AddTask
+                                object={users}
+                                close={() => setNewTask(false)}
+                                refreshTasks={() => RefreshTasks()}
+                            />
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={3}>
+                                    <Chip
+                                        icon={<AddIcon style={{ color: "orangered" }} />}
+                                        label="Add task"
+                                        sx={{
+                                            backgroundColor: "white",
+                                            cursor: "pointer",
+                                            "&:hover": {
+                                                backgroundColor: "whitesmoke",
+                                            },
+                                        }}
+                                        onClick={() => {
+                                            setNewTask(true);
+                                        }}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
