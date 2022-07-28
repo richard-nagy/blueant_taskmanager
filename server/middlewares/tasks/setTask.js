@@ -1,12 +1,12 @@
 module.exports = function (app, db) {
     app.put("/setTasks", (req, res) => {
+        let variables = [];
         let index = 0;
-
         let text = "UPDATE tasks s JOIN ( ";
 
         for (const [_, task] of Object.entries(req.body.data)) {
             if (index === 0) {
-                text += `SELECT ${task.idtask} as idtask, "${task.task}" as newTask, ${task.done} as newDone, "${task.color}" as newColor, ${task.iduser} as newIduser `;
+                text += `SELECT ? as idtask, ? as newTask, ? as newDone, ? as newColor, ? as newIduser `;
             } else {
                 text += `SELECT ${task.idtask}, "${task.task}", ${task.done}, "${task.color}", ${task.iduser} `;
             }
@@ -15,6 +15,7 @@ module.exports = function (app, db) {
                 text += "UNION ALL ";
             }
 
+            variables.push(task.idtask, task.task, task.done, task.color, task.iduser);
             index++;
         }
 
@@ -22,8 +23,9 @@ module.exports = function (app, db) {
 
         db.query(
             text,
+            variables,
 
-            (err, result) => {
+            (err) => {
                 if (err) {
                     console.log(err);
                 } else {
