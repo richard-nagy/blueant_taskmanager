@@ -2,15 +2,19 @@ import { Checkbox, TableCell, TableRow } from "@mui/material";
 import CircleCheckedFilled from "@mui/icons-material/CheckCircle";
 import CircleUnchecked from "@mui/icons-material/CircleOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import AddTask from "./AddTask";
 
-export default function TaskBar({ taskInformation, users, refreshTasks }) {
-    const [checked, setChecked] = useState(taskInformation.done === 0 ? false : true);
+export default function TaskBar({ task, users, refreshTasks, changeTask }) {
+    const [checked, setChecked] = useState(!task.done ? false : true);
+    const [edit, setEdit] = useState(false);
+    const firstRender = useRef(true);
 
     function DeleteTask() {
         axios
-            .delete("http://localhost:3001/deleteTask", { data: { id: taskInformation.idtask } })
+            .delete("http://localhost:3001/deleteTask", { data: { id: task.idtask } })
             .then(() => {
                 refreshTasks();
             })
@@ -19,27 +23,37 @@ export default function TaskBar({ taskInformation, users, refreshTasks }) {
             });
     }
 
-    return (
+    return edit ? (
+        <AddTask
+            users={users}
+            close={() => setEdit(false)}
+            refreshTasks={() => refreshTasks}
+            startingValues={{ ...task }}
+            changeTask={(e) => {
+                changeTask(e);
+                setEdit(false);
+            }}
+        />
+    ) : (
         <TableRow>
             <TableCell sx={{ width: "1px", whiteSpace: "nowrap", paddingRight: "0" }}>
                 <Checkbox
                     icon={<CircleUnchecked />}
                     checkedIcon={<CircleCheckedFilled />}
                     size="small"
-                    color={taskInformation.color}
+                    color={task.color}
                     checked={checked}
                     sx={{
-                        color: `${taskInformation.color}.main`,
+                        color: `${task.color}.main`,
                     }}
                     onChange={() => {
                         setChecked(!checked);
+                        changeTask({ ...task, done: !checked });
                     }}
                 />
             </TableCell>
-            <TableCell sx={{ paddingLeft: "0" }}>{taskInformation.task}</TableCell>
-            <TableCell align="right">
-                {taskInformation.iduser ? taskInformation.iduser : "-"}
-            </TableCell>
+            <TableCell sx={{ paddingLeft: "0" }}>{task.task}</TableCell>
+            <TableCell align="right">{task.iduser ? task.iduser : "-"}</TableCell>
             <TableCell
                 align="right"
                 sx={{
@@ -47,6 +61,17 @@ export default function TaskBar({ taskInformation, users, refreshTasks }) {
                     whiteSpace: "nowrap",
                 }}
             >
+                <EditIcon
+                    onClick={() => {
+                        setEdit(true);
+                    }}
+                    sx={{
+                        cursor: "pointer",
+                        padding: "6px",
+                        margin: "0 0 -6px 0",
+                        "&:hover": { color: "primary.main" },
+                    }}
+                />
                 <DeleteIcon
                     onClick={() => {
                         DeleteTask();
@@ -55,7 +80,7 @@ export default function TaskBar({ taskInformation, users, refreshTasks }) {
                         cursor: "pointer",
                         padding: "6px",
                         margin: "0 0 -6px 0",
-                        "&:hover": { color: "red" },
+                        "&:hover": { color: "error.main" },
                     }}
                 />
             </TableCell>

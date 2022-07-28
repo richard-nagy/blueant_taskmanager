@@ -20,10 +20,17 @@ const HighButton = styled(Button)(() => ({
 
 const colors = ["primary", "secondary", "error", "warning", "info", "success"];
 
-export default function AddTask({ object, close, refreshTasks }) {
-    const [color, setColor] = useState("primary");
-    const [task, setTask] = useState("");
-    const [user, setUser] = useState(null);
+export default function AddTask({
+    users,
+    close,
+    refreshTasks,
+    startingValues = { task: "", color: "primary", iduser: null },
+    addNew = false,
+    changeTask = undefined,
+}) {
+    const [color, setColor] = useState(startingValues.color);
+    const [task, setTask] = useState(startingValues.task);
+    const [user, setUser] = useState(startingValues.iduser);
 
     function AddTask() {
         if (task !== "") {
@@ -43,7 +50,7 @@ export default function AddTask({ object, close, refreshTasks }) {
 
     return (
         <TableRow>
-            <TableCell colSpan={3} justify="center">
+            <TableCell colSpan={4} justify="center">
                 <Grid container direction="row" spacing={2} alignItems="center">
                     <Grid item>
                         <FormControl sx={{ width: 200 }}>
@@ -108,9 +115,9 @@ export default function AddTask({ object, close, refreshTasks }) {
                                 <MenuItem value={null}>
                                     <i style={{ color: "gray" }}>No user</i>
                                 </MenuItem>
-                                {object.map((mapUser) => {
+                                {users.map((mapUser) => {
                                     return (
-                                        <MenuItem value={mapUser.user} key={Math.random()}>
+                                        <MenuItem value={mapUser.iduser} key={Math.random()}>
                                             {mapUser.user}
                                         </MenuItem>
                                     );
@@ -130,10 +137,17 @@ export default function AddTask({ object, close, refreshTasks }) {
                                 <HighButton
                                     variant="contained"
                                     onClick={() => {
-                                        AddTask();
+                                        addNew
+                                            ? AddTask()
+                                            : changeTask({
+                                                  ...startingValues,
+                                                  color: color,
+                                                  task: task,
+                                                  iduser: user,
+                                              });
                                     }}
                                 >
-                                    Add
+                                    Save
                                 </HighButton>
                             </Grid>
                             <Grid item>
