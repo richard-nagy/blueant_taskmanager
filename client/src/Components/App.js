@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import TaskBar from "./TaskBar";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,9 +10,11 @@ import {
     TableCell,
     TableContainer,
     TableRow,
+    Typography,
 } from "@mui/material";
-import SaveIcon from "@mui/icons-material/Save";
+import SaveIcon from "@mui/icons-material/SaveOutlined";
 import AddTask from "./AddTask";
+import axiosApi from "../apis/axiosApi";
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -41,37 +43,6 @@ function App() {
             });
     }, []);
 
-    function RefreshTasks() {
-        axios
-            .get("http://localhost:3001/getTasks")
-            .then((res) => {
-                setTasks(res.data);
-            })
-            .catch(function () {
-                setError(true);
-            });
-    }
-
-    function ChangeTask(update) {
-        setUpdatedTasks({ ...updatedTasks, [update.idtask]: update });
-
-        let obj = tasks.find((o, i) => {
-            if (o.idtask === update.idtask) {
-                const newTask = [...tasks];
-                newTask[i] = update;
-                setTasks(newTask);
-
-                return true;
-            }
-        });
-    }
-
-    function UpdateTasks() {
-        axios.put("http://localhost:3001/setTasks", { data: updatedTasks }).catch(function () {
-            alert("Error");
-        });
-    }
-
     if (loading) {
         return "Loading...";
     }
@@ -80,9 +51,59 @@ function App() {
         return "Error!";
     }
 
+    function RefreshTasks() {
+        axiosApi(
+            "get",
+            "getTasks",
+            null,
+            (res) => setTasks(res.data),
+            () => setError(true)
+        );
+    }
+
+    function ChangeTask(update) {
+        setUpdatedTasks({ ...updatedTasks, [update.idtask]: update });
+
+        tasks.find((o, i) => {
+            if (o.idtask === update.idtask) {
+                const newTask = [...tasks];
+                newTask[i] = update;
+                setTasks(newTask);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    function UpdateTasks() {
+        axiosApi(
+            "put",
+            "setTasks",
+            { data: updatedTasks },
+            () => {
+                setUpdatedTasks();
+            },
+            () => alert("Error")
+        );
+    }
+
     return (
-        <Container>
+        <Container sx={{ mt: 10 }}>
+            <div
+                style={{
+                    left: 0,
+                    top: 0,
+                    position: "absolute",
+                    width: "100vw",
+                    height: "5px",
+                    backgroundColor: "orangered",
+                }}
+            />
+
             <TableContainer>
+                <Typography sx={{ marginLeft: "20px", fontWeight: "bold" }} variant="h5">
+                    Today
+                </Typography>
                 <Table>
                     <TableBody>
                         {tasks.map((taskMap) => {
@@ -108,8 +129,9 @@ function App() {
                                 <TableCell colSpan={4}>
                                     <Chip
                                         icon={<AddIcon style={{ color: "orangered" }} />}
-                                        label="Add task"
+                                        label="Add Task"
                                         sx={{
+                                            fontWeight: "bold",
                                             backgroundColor: "white",
                                             cursor: "pointer",
                                             "&:hover": {
@@ -125,10 +147,17 @@ function App() {
                         )}
                     </TableBody>
                 </Table>
+                {updatedTasks && (
+                    <Chip
+                        label="Save Changes"
+                        icon={<SaveIcon />}
+                        onClick={() => UpdateTasks()}
+                        sx={{ m: 1, float: "right" }}
+                        variant="outlined"
+                        color="primary"
+                    />
+                )}
             </TableContainer>
-            {updatedTasks && (
-                <Chip label="Save Changes" icon={<SaveIcon />} onClick={() => UpdateTasks()} />
-            )}
         </Container>
     );
 }

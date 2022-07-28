@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useState } from "react";
-import axios from "axios";
 import styled from "@emotion/styled";
+import axiosApi from "../apis/axiosApi";
 
 const HighButton = styled(Button)(() => ({
     width: "80px",
+    fontWeight: "bold",
 }));
 
 const colors = ["primary", "secondary", "error", "warning", "info", "success"];
@@ -36,15 +37,18 @@ export default function AddTask({
         if (task !== "") {
             const userid = user === "" ? null : user;
 
-            axios
-                .post("http://localhost:3001/addTask", { task, color, userid })
-                .then(() => {
+            axiosApi(
+                "post",
+                "addTask",
+                { task, color, userid },
+                () => {
                     close();
                     refreshTasks();
-                })
-                .catch(function () {
+                },
+                () => {
                     alert("Error");
-                });
+                }
+            );
         }
     }
 
@@ -135,7 +139,7 @@ export default function AddTask({
                         >
                             <Grid item>
                                 <HighButton
-                                    variant="contained"
+                                    variant="outlined"
                                     onClick={() => {
                                         addNew
                                             ? AddTask()
@@ -153,7 +157,7 @@ export default function AddTask({
                             <Grid item>
                                 <HighButton
                                     color="error"
-                                    variant="contained"
+                                    variant="outlined"
                                     onClick={() => {
                                         close();
                                     }}

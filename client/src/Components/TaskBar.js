@@ -1,26 +1,26 @@
 import { Checkbox, TableCell, TableRow } from "@mui/material";
 import CircleCheckedFilled from "@mui/icons-material/CheckCircle";
 import CircleUnchecked from "@mui/icons-material/CircleOutlined";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import DeleteIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditIcon from "@mui/icons-material/EditOutlined";
+import { useState } from "react";
 import AddTask from "./AddTask";
+import axiosApi from "../apis/axiosApi";
 
 export default function TaskBar({ task, users, refreshTasks, changeTask }) {
     const [checked, setChecked] = useState(!task.done ? false : true);
     const [edit, setEdit] = useState(false);
-    const firstRender = useRef(true);
 
     function DeleteTask() {
-        axios
-            .delete("http://localhost:3001/deleteTask", { data: { id: task.idtask } })
-            .then(() => {
-                refreshTasks();
-            })
-            .catch(function () {
+        axiosApi(
+            "delete",
+            "deleteTask",
+            { data: { id: task.idtask } },
+            () => refreshTasks(),
+            () => {
                 alert("Error");
-            });
+            }
+        );
     }
 
     return edit ? (
@@ -53,7 +53,9 @@ export default function TaskBar({ task, users, refreshTasks, changeTask }) {
                 />
             </TableCell>
             <TableCell sx={{ paddingLeft: "0" }}>{task.task}</TableCell>
-            <TableCell align="right">{task.iduser ? task.iduser : "-"}</TableCell>
+            <TableCell align="right">
+                {task.iduser ? users.find((e) => e.iduser !== task.iduser).user : "-"}
+            </TableCell>
             <TableCell
                 align="right"
                 sx={{
