@@ -1,5 +1,5 @@
 module.exports = function (app, db) {
-    app.get("/getUsers", (_, res) => {
+    app.get("/user/get", (_, res) => {
         db.query("SELECT * FROM users", (err, result) => {
             if (err) {
                 console.log(err);

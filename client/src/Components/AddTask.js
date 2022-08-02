@@ -39,7 +39,7 @@ export default function AddTask({
 
             axiosApi(
                 "post",
-                "addTask",
+                "task/add",
                 { task, color, userid },
                 () => {
                     close();

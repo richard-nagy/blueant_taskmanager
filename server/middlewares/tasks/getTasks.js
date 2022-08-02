@@ -1,5 +1,5 @@
-module.exports = function (app, db) {
-    app.get("/getTasks", (_, res) => {
+module.exports = function (db) {
+    return (_, res) => {
         db.query("SELECT * FROM tasks", (err, result) => {
             if (err) {
                 console.log(err);
@@ -8,5 +8,5 @@ module.exports = function (app, db) {
                 res.send(result);
             }
         });
-    });
+    };
 };

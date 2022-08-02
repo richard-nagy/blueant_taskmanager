@@ -14,7 +14,7 @@ export default function TaskBar({ task, users, refreshTasks, changeTask }) {
     function DeleteTask() {
         axiosApi(
             "delete",
-            "deleteTask",
+            "task/delete",
             { data: { id: task.idtask } },
             () => refreshTasks(),
             () => {

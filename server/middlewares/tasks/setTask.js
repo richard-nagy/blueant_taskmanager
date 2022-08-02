@@ -1,5 +1,5 @@
-module.exports = function (app, db) {
-    app.put("/setTasks", (req, res) => {
+module.exports = function (db) {
+    return (req, res) => {
         let variables = [];
         let index = 0;
         let text = "UPDATE tasks s JOIN ( ";
@@ -34,5 +34,5 @@ module.exports = function (app, db) {
                 }
             }
         );
-    });
+    };
 };

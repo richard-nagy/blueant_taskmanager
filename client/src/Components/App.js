@@ -27,8 +27,8 @@ function App() {
     useEffect(() => {
         axios
             .all([
-                axios.get("http://localhost:3001/getTasks"),
-                axios.get("http://localhost:3001/getUsers"),
+                axios.get("http://localhost:3001/task/get"),
+                axios.get("http://localhost:3001/user/get"),
             ])
             .then(
                 axios.spread((res1, res2) => {
@@ -54,7 +54,7 @@ function App() {
     function RefreshTasks() {
         axiosApi(
             "get",
-            "getTasks",
+            "task/get",
             null,
             (res) => setTasks(res.data),
             () => setError(true)
@@ -78,7 +78,7 @@ function App() {
     function UpdateTasks() {
         axiosApi(
             "put",
-            "setTasks",
+            "task/set",
             { data: updatedTasks },
             () => {
                 setUpdatedTasks();
