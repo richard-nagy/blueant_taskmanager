@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/SaveOutlined";
 import AddTask from "./AddTask";
-import axiosApi from "../apis/axiosApi";
+import axiosApi from "../../apis/axiosApi";
 
-function App() {
+export default function TaskManager() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [newTask, setNewTask] = useState(false);
@@ -25,22 +25,20 @@ function App() {
     const [updatedTasks, setUpdatedTasks] = useState();
 
     useEffect(() => {
-        axios
-            .all([
-                axios.get("http://localhost:3001/task/get"),
-                axios.get("http://localhost:3001/user/get"),
-            ])
-            .then(
-                axios.spread((res1, res2) => {
-                    setTasks(res1.data);
-                    setUsers(res2.data);
-                    setLoading(false);
-                })
-            )
-            .catch(function () {
-                setError(true);
+        axiosApi(
+            ["get", "get"],
+            ["task/get", "user/get"],
+            [null, null],
+            (res1, res2) => {
+                setTasks(res1.data);
+                setUsers(res2.data);
                 setLoading(false);
-            });
+            },
+            () => {
+                setLoading(false);
+                setError(true);
+            }
+        );
     }, []);
 
     if (loading) {
@@ -161,5 +159,3 @@ function App() {
         </Container>
     );
 }
-
-export default App;

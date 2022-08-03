@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import { useState } from "react";
 import AddTask from "./AddTask";
-import axiosApi from "../apis/axiosApi";
+import axiosApi from "../../apis/axiosApi";
 
 export default function TaskBar({ task, users, refreshTasks, changeTask }) {
     const [checked, setChecked] = useState(!task.done ? false : true);

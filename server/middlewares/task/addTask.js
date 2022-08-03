@@ -1,7 +1,5 @@
 module.exports = function (db) {
     return (req, res) => {
-        console.log("itt");
-
         db.query(
             "INSERT INTO tasks (task, color, iduser) VALUES (?, ?, ?)",
             [req.body.task, req.body.color, 1],

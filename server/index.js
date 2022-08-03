@@ -16,11 +16,6 @@ const db = mysql.createConnection({
 require("./middlewares/task/tasks.js")(app, db);
 require("./middlewares/user/user.js")(app, db);
 
-// app.use("/test_auth", authentication(), (req, res) => {
-//     console.log(req.query.test);
-//     res.send("req");
-// });
-
 app.listen(3001, () => {
     console.log(`Your server is running on port 3001...`);
 });
