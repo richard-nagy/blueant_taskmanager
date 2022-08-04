@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import TaskBar from "./TaskBar";
+import UserTableRow from "./UserTableRow";
 import AddIcon from "@mui/icons-material/Add";
 import {
     Chip,
@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/SaveOutlined";
 import AddTask from "./AddTask";
-import axiosApi from "../../apis/axiosApi";
+import axiosApi from "../../apis/AxiosApi";
 
-export default function TaskManager() {
+export default function UserTable() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [newTask, setNewTask] = useState(false);
@@ -106,7 +106,7 @@ export default function TaskManager() {
                     <TableBody>
                         {tasks.map((taskMap) => {
                             return (
-                                <TaskBar
+                                <UserTableRow
                                     task={taskMap}
                                     users={users}
                                     refreshTasks={() => RefreshTasks()}

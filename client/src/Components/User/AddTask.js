@@ -12,7 +12,7 @@ import {
 import CircleIcon from "@mui/icons-material/Circle";
 import { useState } from "react";
 import styled from "@emotion/styled";
-import axiosApi from "../../apis/axiosApi";
+import axiosApi from "../../apis/AxiosApi";
 
 const HighButton = styled(Button)(() => ({
     width: "80px",
